@@ -28,7 +28,7 @@ test('to array', function (): void {
 });
 // testing casts
 it('casts status to Enum', function (): void {
-    $order = Order::factory()->create(['status' => OrderStatus::Pending->value])->fresh();
+    $order = Order::factory()->create(['status' => OrderStatus::PENDING->value])->fresh();
     expect($order->status)->toBeInstanceOf(OrderStatus::class);
 });
 // testing relationships
@@ -53,7 +53,7 @@ it('creates an order', function (): void {
     $user = User::factory()->create()->fresh();
     $data = [
         'user_id'      => $user->id,
-        'status'       => OrderStatus::Pending->value,
+        'status'       => OrderStatus::PENDING->value,
         'total_amount' => '299.99',
         'notes'        => 'Priority shipping requested.',
     ];
@@ -64,7 +64,7 @@ it('creates an order', function (): void {
     expect(Order::count())->toBe(1)
         ->and($order)->toBeInstanceOf(Order::class)
         ->and($order->user_id)->toBe($user->id)
-        ->and($order->status)->toBe(OrderStatus::Pending)
+        ->and($order->status)->toBe(OrderStatus::PENDING)
         ->and($order->total_amount)->toBe('299.99')
         ->and($order->notes)->toBe('Priority shipping requested.');
 });
@@ -81,7 +81,7 @@ it('transforms order resource into array with all fields', function (): void {
     $user = User::factory()->create()->fresh();
     $order = Order::factory()->create([
       'user_id' => $user->id,
-      'status' => OrderStatus::Pending->value,
+      'status' => OrderStatus::PENDING->value,
       'total_amount' => '1000',
       'notes' => 'test'
     ])->fresh();
@@ -89,7 +89,7 @@ it('transforms order resource into array with all fields', function (): void {
     expect((new ShowResource($order))->toArray(new Request()))
     ->toBe([
       'user_id' => $user->id,
-      'status' => OrderStatus::Pending->value,
+      'status' => OrderStatus::PENDING->value,
       'total_amount' => '1000',
       'notes' => 'test'
     ]);
@@ -109,7 +109,7 @@ it('stores a new order in the database and returns the resource', function () {
     $user = User::factory()->create()->fresh();
     $payload = [
         'total_amount' => '299.99',
-        'status' => OrderStatus::Pending->value,
+        'status' => OrderStatus::PENDING->value,
         'notes' => 'Priority shipping requested.',
     ];
     // Act
@@ -119,14 +119,14 @@ it('stores a new order in the database and returns the resource', function () {
     $response->assertStatus(Response::HTTP_CREATED)
         ->assertJsonFragment([
             'total_amount' => '299.99',
-            'status' => OrderStatus::Pending->value,
+            'status' => OrderStatus::PENDING->value,
             'notes' => 'Priority shipping requested.',
         ]);
     // Verify Database Persistence
     $this->assertDatabaseHas('orders', [
         'user_id' => $user->id,
         'total_amount' => 299.99,
-        'status' => OrderStatus::Pending->value,
+        'status' => OrderStatus::PENDING->value,
     ]);
 });
 it('requires valid data to create an order', function (string $field, mixed $value) {
@@ -134,7 +134,7 @@ it('requires valid data to create an order', function (string $field, mixed $val
     $user = User::factory()->create()->fresh();
     $payload = [
         'total_amount' => '100.00',
-        'status' => OrderStatus::Pending->value,
+        'status' => OrderStatus::PENDING->value,
     ];
     // Override with invalid data
     $payload[$field] = $value;

@@ -115,7 +115,7 @@ class Order extends Model
     // Scope: descriptive name, typed builder return
     public function scopePending(Builder $query): Builder
     {
-        return $query->where('status', OrderStatus::Pending);
+        return $query->where('status', OrderStatus::PENDING);
     }
 }
 ```
