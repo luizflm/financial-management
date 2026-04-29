@@ -1,7 +1,7 @@
-# Project: [App Name] - System Prompt
+# Project: Financial Management - System Prompt
 
 You are working on a Laravel 13 application. This is a production
-backend/frontend service handling [domain description]. The application runs
+backend/frontend service handling a personal financial management based on transactions. The application runs
 inside Docker containers.
 
 ## Critical Rules
@@ -17,7 +17,6 @@ the codebase.
 @rules/coding-style.md
 @rules/architecture.md
 @rules/testing.md
-@rules/security.md
 @rules/git-workflow.md
 
 ## Environment
@@ -31,10 +30,15 @@ docker exec app ./vendor/bin/phpstan analyse
 ```
 
 ## Domain Overview
-[Brief description of what the application does, who the users are, what the core entities are and how they relate to each other. This section is 10–20 lines of plain language explaining the business domain so Claude understands the WHY behind the code.]
+This application helps individual users track their personal finances by recording and categorizing financial transactions. Each user manages their own isolated data — there is no shared or multi-tenant data model.
 
-## API Structure (if it has)
-All endpoints are versioned under /api/v1/. Authentication uses Laravel Sanctum with token-based auth. Responses always use API Resources, never raw model output. Pagination follows Laravel default with per_page parameter.
+The central entity is the Transaction, which represents a single financial movement: money coming in (income) or going out (expense). Every transaction belongs to a User, has an amount, a date, a type (income or expense), and is assigned to a Category.
+
+Categories organize transactions into groups (e.g., Food, Salary, Rent, Transport). They belong to a User, allowing personalized categorization. A Category has a type that matches the transaction type it groups.
+
+Users authenticate via FilamentPHP's built-in authentication and can only access their own data. Authorization is enforced at the policy layer for every resource.
+
+The primary use cases are: recording new transactions, listing and filtering transactions by date range or category, and summarizing totals per category or period to give the user an overview of their financial health.
 
 ## Key Conventions
 - Single-action controllers for non-CRUD endpoints
